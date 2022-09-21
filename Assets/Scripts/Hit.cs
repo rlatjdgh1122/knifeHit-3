@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class Hit : MonoBehaviour
 {
-    public float rotate = Random.Range(0,255);
-    public float coolTime = Random.Range(1, 4);
+    public float rotateSpeed;
+    public Vector3 rotateAngle =Vector3.forward;
+
+    private Movement movement;
+    private void Awake()
+    {
+        movement = GetComponent<Movement>();
+    }
+    private IEnumerator Start()
+    {
+        while (true)
+        {
+            int time = Random.Range(1, 5);
+            yield return new WaitForSeconds(time);
+            int speed = Random.Range(10, 300);
+            int dir = Random.Range(0, 2);
+
+            rotateSpeed = speed;
+            rotateAngle = new Vector3(0, 0, dir * 2 - 1);
+        }
+    }
     private void Update()
     {
-        coolTime -= Time.deltaTime;
-        
-        gameObject.transform.Rotate(new Vector3(0, 0, rotate)); 
-    }
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("bullet"))
-        {
-            collision.gameObject.GetComponent<Movement>().MoveTo(Vector2.zero); 
-            Debug.Log("fuck");
-        }
+        transform.Rotate(rotateAngle * rotateSpeed * Time.deltaTime);
     }
 }
